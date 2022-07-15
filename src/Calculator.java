@@ -1,109 +1,38 @@
-import java.util.HashMap;
-import java.util.Map;
+import check.CheckNumber;
+import check.Mark;
+import check.SignCheck;
+import exeption.CheckException;
+import numbers.Manipulation;
+import numbers.Roman;
+
 import java.util.Scanner;
 
 public class Calculator {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CheckException {
 
-        Arabic arabic = new Arabic();
+        CheckNumber checkNumber = new CheckNumber();
+        SignCheck signCheck = new SignCheck();
+        Mark mark = new Mark();
+        Manipulation arabic = new Manipulation();
         Roman roman = new Roman();
 
         System.out.print("Enter expressions: ");
         Scanner sc = new Scanner(System.in);
         String put = sc.nextLine().replaceAll("\\s+", "");
         String[] mass = put.split("[+*/\\-]+");
-        String[] rep = put.split("");
+        String opo = mark.token(put);
 
         if (mass.length == 2) {
-            if (isArabic(mass[0], mass[1])) {
-                for (String s : rep) {
-                    int[] full = parse(mass[0], mass[1]);
-                    switch (s) {
-                        case ("+"):
-                            arabic.addition(full);
-                            break;
-                        case ("-"):
-                            arabic.subtraction(full);
-                            break;
-                        case ("*"):
-                            arabic.multiplication(full);
-                            break;
-                        case ("/"):
-                            arabic.division(full);
-                    }
-                }
-            } else if (isRoman(mass[0], mass[1])) {
-                for (String s : rep) {
-                    romanToArabic(mass[0], mass[1]);
-                    String[] full = {mass[0], mass[1]};
-                    switch (s) {
-                        case ("+"):
-                            roman.addition(full);
-                            break;
-                        case ("-"):
-                            roman.subtraction(full);
-                            break;
-                        case ("*"):
-                            roman.multiplication(full);
-                            break;
-                        case ("/"):
-                            roman.division(full);
-                    }
-                }
+            if (CheckNumber.isArabic(mass[0], mass[1])) {
+                arabic.display(signCheck.sign(opo, CheckNumber.parse(mass[0], mass[1])));
+            } else if (checkNumber.isRoman(mass[0], mass[1])) {
+                roman.romanDisplay(signCheck.sign(opo, roman.romanToArabicConverter(mass[0], mass[1])));
             } else {
-                System.err.println("Incorrect value!");
+                throw new CheckException("Different number systems are used at the same time");
             }
         } else {
-            System.err.println("Incorrect value!");
+            throw new CheckException("The format of the mathematical operation" +
+                    " does not satisfy the task - two operands and one operator (+, -, /, *)");
         }
-    }
-
-    public static boolean isArabic(String one, String two) {
-        try {
-            parse(one, two);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    public static boolean isRoman(String one, String two) {
-        String[] roman = {"I", "V", "X", "L", "C", "D", "M"};
-        String mass = one + two;
-        char[] isMassChar = mass.toCharArray();
-        int counter = isMassChar.length;
-
-        for (String s : roman) {
-            for (char c : isMassChar) {
-                if (s.equals(Character.toString(c))) {
-                    counter--;
-                }
-            }
-        }
-        return counter == 0;
-    }
-
-    public static int[] parse(String one, String two) {
-        return new int[]{Integer.parseInt(one), Integer.parseInt(two)};
-    }
-
-    public static int [] romanToArabic(String one, String two) {
-        String[] arr = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
-        HashMap<String, Integer> map = new HashMap<>();
-        int i = 1;
-        for (String element : arr) {
-            map.put(element, i);
-            i++;
-        }
-        int [] mass = new int[2];
-        int res = 0;
-        for (Map.Entry e : map.entrySet()) {
-            if (e.equals(one)) {
-                res += (int) e.getValue();
-            }
-        }
-        System.out.println(res);
-
-        return mass;
     }
 }
