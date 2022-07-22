@@ -7,6 +7,9 @@ import java.util.Map;
 
 public class Roman {
 
+    public static int[] arab = {1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000};
+    public static String[] roman = {"I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M"};
+
     public static Map<String, Integer> romanMap() {
         String[] arr = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII",
                 "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
@@ -29,13 +32,18 @@ public class Roman {
         return massToArabic;
     }
 
-    public void romanDisplay(int a) throws CheckException {
+    public String romanDisplay(int a) throws CheckException {
         if (a > 0) {
-            for (Map.Entry e : romanMap().entrySet()) {
-                if (e.getValue().equals(a)) {
-                    System.out.println(e.getKey());
+            int i = 12;
+            StringBuilder result = new StringBuilder();
+            while (a > 0) {
+                while (arab[i] > a) {
+                    i--;
                 }
+                result.append(roman[i]);
+                a -= arab[i];
             }
+            return String.valueOf(result);
         } else {
             throw new CheckException("There are no negative numbers in the roman system");
         }

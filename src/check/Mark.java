@@ -4,7 +4,7 @@ import exeption.CheckException;
 
 public class Mark {
     public String token(String txt) throws CheckException {
-        String b = "";
+        String b;
         if (txt.contains("-")) {
             b = "-";
         } else if (txt.contains("+")) {
